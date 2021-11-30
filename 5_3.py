@@ -1,3 +1,9 @@
+#import pygame as pg
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+
+
 
 #loads and variables declaration:
 
@@ -43,6 +49,36 @@ class LaunchAccel:
 
 
 #functions:
+
+#calcPressure
+def calcPressure(R,l,propellant,temp):
+    volumeCylinder = math.pi * R**2 * l
+    volumeHemispheres = 4/3 * math.pi * R**3
+
+    volumeTotal = volumeHemispheres + volumeCylinder
+
+    mols = (propellant.mass*1000) / propellant.molarMass
+    R = 8.31446261815324
+    pressure = (mols*R*temp)/volumeTotal
+    return pressure
+
+#calcLaunchLoads
+def calcLaunchLoads(mass,launchAccel):
+    loadsLong = mass * launchAccel.long_max * launchAccel.SafetyFactor * g
+    loadsLat = mass * launchAccel.lat_max * launchAccel.SafetyFactor * g
+    return [loadsLong,loadsLat]
+
+# calcsigma_A
+def calcsigma_A(Force, Area):
+    sigma_A = Force/Area
+    return sigma_A
+
+#calcExperiencedStress
+def calcEcperiencedStress(load,R,t):
+    area = calcAreaCylinder(R,t)
+    sigmaLong = load / area
+    return sigmaLong
+
 #calcEulerBucklingCriticalStress
 def calcEulerBucklingCriticalStress(material,R,t,L):
     E = material.E
